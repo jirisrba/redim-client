@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: dev-postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    restart: 'always'
+#    volumes:
+#       - postgres:/data/postgres
+    ports:
+      - '5432:5432'
+    networks:
+      - postgres
+    build:
+      context: ./postgres
+    image: redim-postgres:latest
+
+
+networks:
+  postgres:

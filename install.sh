@@ -5,8 +5,9 @@
 # script would continue its execution.
 set -o errexit
 
+declare -r server="vip-dev-pgi"
+# declare -r server="localhost"
 declare -r redim_username="redim"
-declare -r redim_password="abcd1234"
 declare -r redim_database="postgres"
 
 # postgres 12 fix
@@ -14,11 +15,11 @@ export PGGSSENCMODE=disable
 
 
 create_view() {
-  psql -v ON_ERROR_STOP=1 -h localhost -U "$redim_username" -d "$redim_database" -f view/pg_view.sql
+  psql -v ON_ERROR_STOP=1 -h "$server" -U "$redim_username" -d "$redim_database" -f view/pg_view.sql
 }
 
 create_func() {
-  psql -v ON_ERROR_STOP=1 -h localhost -U "$redim_username" -d "$redim_database" <<-EOSQL
+  psql -v ON_ERROR_STOP=1 -h "$server" -U "$redim_username" -d "$redim_database" <<-EOSQL
      \i function/get_version.sql
      \i function/run_sql.sql
      \i function/create_db_user.sql
@@ -31,7 +32,7 @@ EOSQL
 }
 
 unit_test() {
-  psql -v ON_ERROR_STOP=1 -h localhost -U "$redim_username" -d "$redim_database" -f pg_unit_test.sql
+  psql -v ON_ERROR_STOP=1 -h "$server" -U "$redim_username" -d "$redim_database" -f pg_unit_test.sql
 }
 
 # Main execution:

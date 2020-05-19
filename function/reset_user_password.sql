@@ -1,23 +1,21 @@
 create or replace function redim.reset_user_password(
-    username text,
-    password text,
+    p_username text,
+    p_user_pswd text,
     debug boolean DEFAULT false)
   returns void
   language plpgsql
 as $$
 declare
   sql text;
-  v_username text := lower(username);
 begin
 
   -- SQL command to change password
   sql := format(
       'ALTER USER %s WITH PASSWORD %s',
-      quote_ident(v_username),
-      quote_literal(password));
+      quote_ident(lower(p_username)),
+      quote_literal(p_user_pswd));
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
-  select run_sql(sql, debug);
-
+    RAISE NOTICE 'change password %s', run_sql(sql, debug);
 end;
 $$;

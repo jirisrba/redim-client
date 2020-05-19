@@ -11,6 +11,7 @@
 drop view IF EXISTS redim.redim_users;
 drop view IF EXISTS redim.redim_roles;
 drop view IF EXISTS redim.redim_user_roles;
+drop view IF EXISTS redim.redim_templates;
 
 
 CREATE OR REPLACE VIEW redim.redim_users
@@ -24,14 +25,10 @@ AS
       u.valuntil  AS EXPIRY_DATE,
       NULL::text  AS LOCK_DATE,
       NULL::text  AS LAST_LOGIN,
-      NULL::text  AS DEFAULT_TABLESPACE,
-      NULL::text  AS TEMPORARY_TABLESPACE,
-      NULL::text  AS RESOURCE_CONSUMER_GROUP,
       CASE
         WHEN u.usename ~ '^[a-zA-Z]{1,3}\d{4,}$' THEN 1
         ELSE 0
-      END         AS IS_CEN,
-      current_database()  AS DATABASE_NAME
+      END         AS IS_CEN
   FROM
      pg_catalog.pg_user u
 ;
@@ -48,8 +45,7 @@ AS
     r.rolname          as role_name,
     description        as role_desc,
     'DEFAULT'::text    as template_name,
-    'XNA'::text        as area_id,
-    current_database() as database_name
+    'XNA'::text        as area_id
   from
           pg_catalog.pg_roles r
     LEFT JOIN pg_catalog.pg_shdescription c ON c.objoid = r.oid
@@ -63,9 +59,16 @@ AS
   SELECT
       pg_catalog.pg_get_userbyid(m.member) as username,
       r.rolname                         as role_name,
-      COALESCE(c.description, 'N/A')    as role_desc,
-      current_database()                as database_name
+      COALESCE(c.description, 'N/A')    as role_desc
   FROM   pg_catalog.pg_auth_members m
          JOIN pg_catalog.pg_roles r ON (m.roleid = r.oid)
     LEFT JOIN pg_catalog.pg_shdescription c ON c.objoid = r.oid
+;
+
+CREATE OR REPLACE VIEW redim.redim_templates
+AS
+  SELECT
+      0::smallint      as template_id,
+      'DEFAULT'::text  as template_name,
+      'DB uživatel'::text as template_desc
 ;

@@ -1,6 +1,6 @@
 create or replace function redim.revoke_role(
-    username text,
-    role_name text,
+    p_username text,
+    p_role_name text,
     debug boolean DEFAULT false)
   returns void
   language plpgsql
@@ -11,10 +11,9 @@ begin
   -- SQL command to change password
   sql := format(
       'REVOKE %s FROM %s',
-      quote_ident(role_name),
-      quote_ident(lower(username)));
+      quote_ident(p_role_name),
+      quote_ident(lower(p_username)));
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
-  select run_sql(sql, debug);
-end;
-$$;
+  RAISE NOTICE 'revoke role %s', run_sql(sql, debug);
+END $$;

@@ -6,117 +6,84 @@
 
 SET SEARCH_PATH TO "redim";
 
+\set p_username 'cen12345'
+\set p_role_name 'csconnect'
+
 DO language plpgsql $$
-DECLARE
-  -- testovaci user a grant testovaci role
-  v_user varchar := 'cen12345';
-  v_role varchar := 'csconnect';
 BEGIN
   RAISE NOTICE 'version %s', get_version();
-END
-$$;
+END $$;
+
+-- create role csconnect
+DO language plpgsql $$
+begin
+  create role csconnect nologin;
+  exception
+  when others then raise notice 'role already exists';
+end $$;
+
+-- cleanup test user
+DO language plpgsql $$
+declare
+  p_username text := 'cen12345';
+  p_user_pswd text := 'abcd1234';
+begin
+  begin
+    RAISE NOTICE 'drop user %s', remove_db_user(p_username, 'drop');
+    exception
+    when others then raise notice 'user not exists';
+  end;
+
+  begin
+    -- create personal user
+    RAISE NOTICE 'create user %s', create_db_user(p_username, p_user_pswd, '0', 'DEFAULT');
+
+    -- Update_User_Profile SSO = True
+    RAISE NOTICE 'update user %s', update_user_profile(p_username, p_sso_enabled => '1');
+
+    -- Update_User_Profile SSO=off
+    RAISE NOTICE 'update user %s', update_user_profile(p_username, p_user_pswd => 'AbcD4321'::text, p_sso_enabled => '0'::char(1));
+
+    -- change template
+    RAISE NOTICE 'update user %s', update_user_profile(p_username, p_template_name => 'DEFAULT');
+
+    -- RESET password
+    RAISE NOTICE 'change password %s', reset_user_password(p_username, 'Hq9i8dw6JWHq9i8dw6JW'::text);
+
+  end;
+end $$;
 
 SELECT role_name, role_desc FROM REDIM_ROLES;
 
 SELECT USERNAME, TEMPLATE_NAME, IS_SSO, IS_OPEN, LAST_LOGIN
-  FROM REDIM_USERS WHERE username = 'cen12345';
+  FROM REDIM_USERS WHERE username = :'p_username';
 
-SELECT role_name, role_desc, database_name, '' AS area_id
-FROM REDIM_USER_ROLES
-WHERE username = 'cen12345';
-
-/*
-prompt Create/Drop role
---
-BEGIN
-  -- create role
-  redim.create_role(
-      p_role_name => :role,
-      p_role_desc => 'Aplikační role');
-
-  -- update role description
-  redim.alter_role(
-      p_role_name => :role,
-      p_role_desc => 'Aplikační role přejmenovaná');
-
-  -- drop role
-  redim.drop_role(:role);
-END;
-/
-
--- personal user
-prompt Cleanup user
-BEGIN redim.Remove_DB_User(:username, p_operation_type => 'drop');
-  EXCEPTION WHEN OTHERS THEN NULL;
-END;
-/
-
-prompt REDIM_TEMPLATES:
-SELECT template_name, template_desc FROM REDIM_TEMPLATES WHERE database_name = :database_name ORDER BY template_id
-/
+SELECT role_name, role_desc, '' AS area_id
+  FROM REDIM_USER_ROLES WHERE username = :'p_username';
 
 
-BEGIN
-  -- create personal user
-  redim.create_db_user(:username, :user_pwd, 0, 'DEFAULT');
-  -- Update_User_Profile SSO = True
-  redim.Update_User_Profile(:username, p_sso_enabled => 1);
-  -- Update_User_Profile SSO=off
-  redim.Update_User_Profile(:username, :user_pwd || 'AbcD432', p_sso_enabled => 0);
-
-  -- change template
- redim.Update_User_Profile(:username, p_template_name => 'DEFAULT');
-END;
-/
-
-SELECT username, template_name, is_sso FROM REDIM_USERS
-  WHERE username = :username AND database_name = :database_name;
+SELECT template_name, template_desc FROM REDIM_TEMPLATES ORDER BY template_id;
 
 
--- RESET password
-BEGIN
-  redim.Reset_User_Password(:username, 'Hq9i8dw6JWHq9i8dw6JW');
-END;
-/
-
-
-prompt Grant/Revoke APP ROLE
-BEGIN
-  -- GRANT ROLE
-  redim.grant_role(:username,'CSCONNECT');
+-- test grant revoke
+DO language plpgsql $$
+declare
+  p_username text := 'cen12345';
+begin
+  -- GRANT role
+  RAISE NOTICE 'change password %s', grant_role(p_username,'csconnect');
 
   -- REVOKE ROLE
-  redim.revoke_role(:username,'CSCONNECT');
+  RAISE NOTICE 'change password %s', revoke_role(p_username,'csconnect');
+end $$;
 
-  -- REVOKE ROLE
-  redim.grant_revoke_role(:username,'CSCONNECT', p_operation_type => 'grant');
-END;
-/
-
-BEGIN
-  -- LOCK s p variantou 0 / 1
-  redim.remove_db_user(:username, 0);
-
+--cleanup
+DO language plpgsql $$
+declare
+  p_username text := 'cen12345';
+begin
   -- drop user personal user se string varinatou p drop
-  redim.Remove_DB_User(:username, p_operation_type => 'drop');
-END;
-/
-
-
---
--- SQL z OracleClient.cs cmd.CommandText = ..
---
-
-
-SELECT role_name, role_desc FROM REDIM_ROLES WHERE template_name = :template_name AND database_name = :database_name
-/
-
-SELECT role_name, role_desc, database_name, '' AS area_id FROM REDIM_USER_ROLES WHERE user_name = :username AND database_name = :database_name
-/
-
-SELECT ur.role_name, ur.role_desc, ur.database_name, area_id
-    FROM REDIM_USER_ROLES ur LEFT JOIN REDIM_ROLES r ON ur.role_name = r.role_name
-  WHERE user_name = :username AND ur.database_name = :database_name
-/
-
-*/
+  RAISE NOTICE 'drop user %s', remove_db_user(p_username, 'drop');
+  exception
+  when others then raise notice 'user not exists';
+end $$;

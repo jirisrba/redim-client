@@ -22,11 +22,14 @@ jobs:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres
+        image: postgres:alpine
         # Provide the password for postgres
         env:
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-        # Set health checks to wait until postgres has started
+          POSTGRES_DB: postgres        # Set health checks to wait until postgres has started
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -37,3 +40,9 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - name: Check out repository code
       uses: actions/checkout@v2
+
+    - name: create redi user
+      run: psql --version
+      env:
+        POSTRES_HOST: postgres
+        POSTGRES_PORT: 5432

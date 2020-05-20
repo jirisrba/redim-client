@@ -1,0 +1,6 @@
+projectKey=redim-postgres
+serverUrl=https://sonarqube.nocp.vs.csin.cz
+serverVersion=7.9.2.30863
+dashboardUrl=https://sonarqube.nocp.vs.csin.cz/dashboard?id=redim-postgres
+ceTaskId=AXIxcRp0yHcr-7pYg3Oe
+ceTaskUrl=https://sonarqube.nocp.vs.csin.cz/api/ce/task?id=AXIxcRp0yHcr-7pYg3Oe

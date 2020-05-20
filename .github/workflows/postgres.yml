@@ -44,8 +44,8 @@ jobs:
     - name: create redim user
       run: psql -v ON_ERROR_STOP=1 -f pg_create_redim_user.sql
       env:
-        PGHOST: postgres
+        PGHOST: localhost
         PGPORT: 5432
-        PGDATABASE: postgres        # Set health checks to wait until postgres has started
+        PGDATABASE: postgres
         PGUSER: postgres
         PGPASSWORD: postgres

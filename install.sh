@@ -5,6 +5,14 @@
 # script would continue its execution.
 set -o errexit
 
+# set env ???
+# export PGHOST=localhost
+# export PGPORT=5432
+# export PGDATABASE=postgres        # Set health checks to wait until postgres has started
+# export PGUSER=postgres
+# export PGPASSWORD=postgres
+
+
 declare -r server="vip-dev-pgi"
 # declare -r server="localhost"
 declare -r redim_username="redim"

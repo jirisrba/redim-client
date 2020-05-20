@@ -42,12 +42,10 @@ jobs:
       uses: actions/checkout@v2
 
     - name: create redim user
-      run: >
-        psql -v ON_ERROR_STOP=1
-        -U $POSTGRE_USER -d $POSTGRES_DB
-        -f pg_create_redim_user.sql
+      run: psql -v ON_ERROR_STOP=1 -f pg_create_redim_user.sql
       env:
-        POSTGRES_USER: postgres
-        POSTGRES_DB: postgres        # Set health checks to wait until postgres has started
-        POSTRES_HOST: postgres
-        POSTGRES_PORT: 5432
+        PGHOST: postgres
+        PGPORT: 5432
+        PGDATABASE: postgres        # Set health checks to wait until postgres has started
+        PGUSER: postgres
+        PGPASSWORD: postgres

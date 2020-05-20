@@ -15,7 +15,11 @@ export PGGSSENCMODE=disable
 
 
 create_view() {
-  psql -v ON_ERROR_STOP=1 -h "$server" -U "$redim_username" -d "$redim_database" -f view/pg_view.sql
+  psql -v ON_ERROR_STOP=1 -h "$server" -U "$redim_username" -d "$redim_database" <<-EOSQL
+    \i view/redim_users.sql
+    \i view/redim_roles.sql
+    \i view/redim_user_roles.sql
+EOSQL
 }
 
 create_func() {

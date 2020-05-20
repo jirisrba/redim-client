@@ -41,7 +41,7 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v2
 
-    - name: create redim user
+    - name: init
       run: psql -v ON_ERROR_STOP=1 -f pg_create_redim_user.sql
       env:
         PGHOST: localhost
@@ -49,3 +49,21 @@ jobs:
         PGDATABASE: postgres
         PGUSER: postgres
         PGPASSWORD: postgres
+
+    - name: install
+      run: psql -v ON_ERROR_STOP=1 -f install.sql
+      env:
+        PGHOST: localhost
+        PGPORT: 5432
+        PGDATABASE: postgres
+        PGUSER: redim
+        PGPASSWORD: abcd1234
+
+    - name: unit tests
+      run: psql -v ON_ERROR_STOP=1 -f pg_unit_test.sql
+      env:
+        PGHOST: localhost
+        PGPORT: 5432
+        PGDATABASE: postgres
+        PGUSER: redim
+        PGPASSWORD: abcd1234

@@ -47,5 +47,7 @@ jobs:
         -U $POSTGRE_USER -d $POSTGRES_DB
         -f pg_create_redim_user.sql
       env:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: postgres        # Set health checks to wait until postgres has started
         POSTRES_HOST: postgres
         POSTGRES_PORT: 5432

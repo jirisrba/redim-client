@@ -13,7 +13,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  container-job:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -41,8 +41,11 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v2
 
-    - name: create redi user
-      run: psql --version
+    - name: create redim user
+      run: >
+        psql -v ON_ERROR_STOP=1
+        -U $POSTGRE_USER -d $POSTGRES_DB
+        -f pg_create_redim_user.sql
       env:
         POSTRES_HOST: postgres
         POSTGRES_PORT: 5432

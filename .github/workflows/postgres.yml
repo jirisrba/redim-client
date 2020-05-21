@@ -44,6 +44,13 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v2
 
+    - uses: yokawasa/action-sqlcheck@v1.2.1
+      with:
+        post-comment: true
+        risk-level: 3
+        verbose: false
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: init
       run: psql -v ON_ERROR_STOP=1 -f pg_create_redim_user.sql
       env:

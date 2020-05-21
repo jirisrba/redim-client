@@ -1,8 +1,4 @@
-#!/bin/bash
-
-# Immediately exits if any error occurs during the script
-# execution. If not set, an error could occur and the
-# script would continue its execution.
+#!/usr/bin/env bash
 set -o errexit
 
 # psql connect ENV
@@ -18,11 +14,7 @@ export PGGSSENCMODE=disable
 
 
 create_view() {
-  psql -v ON_ERROR_STOP=1 <<-EOSQL
-    \i view/redim_users.sql
-    \i view/redim_roles.sql
-    \i view/redim_user_roles.sql
-EOSQL
+  psql -v ON_ERROR_STOP=1 -f install.sql
 }
 
 create_func() {
@@ -45,7 +37,6 @@ unit_test() {
 # Main execution:
 main() {
   create_view
-  create_func
   unit_test
 }
 

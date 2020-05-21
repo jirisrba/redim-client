@@ -62,9 +62,6 @@ SELECT role_name, role_desc, '' AS area_id
   FROM REDIM_USER_ROLES WHERE username = :'p_username';
 
 
-SELECT template_name, template_desc FROM REDIM_TEMPLATES ORDER BY template_id;
-
-
 -- test grant revoke
 DO language plpgsql $$
 declare

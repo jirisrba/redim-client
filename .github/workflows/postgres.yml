@@ -2,6 +2,9 @@
 
 name: PostgreSQL
 
+# source:
+# https://help.github.com/en/actions/configuring-and-managing-workflows/creating-postgresql-service-containers
+#
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
@@ -59,7 +62,7 @@ jobs:
         PGUSER: redim
         PGPASSWORD: abcd1234
 
-    - name: unit tests
+    - name: run tests
       run: psql -v ON_ERROR_STOP=1 -f pg_unit_test.sql
       env:
         PGHOST: localhost

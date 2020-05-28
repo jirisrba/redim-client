@@ -10,6 +10,12 @@ as $$
 declare
   sql text;
 begin
+
+  -- SSO on
+  if p_sso_enabled = '1' then
+    RAISE EXCEPTION 'This SSO is not implemented';
+  end if;
+
   -- SQL command to create user
   sql := format(
       'CREATE USER %s WITH PASSWORD %s',
@@ -17,6 +23,7 @@ begin
       quote_literal(p_user_pswd));
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
-  RAISE NOTICE 'create user %s', run_sql(sql, debug);
+  EXECUTE run_sql(sql, debug);
+
 end;
 $$;

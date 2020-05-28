@@ -17,6 +17,6 @@ begin
   end if;
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
-  RAISE NOTICE 'drop user %s', run_sql(sql, debug);
+  EXECUTE run_sql(sql, debug);
 end;
 $$;

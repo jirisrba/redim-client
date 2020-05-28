@@ -38,14 +38,11 @@ begin
     -- create personal user
     RAISE NOTICE 'create user %s', create_db_user(p_username, p_user_pswd, '0', 'DEFAULT');
 
-    -- Update_User_Profile SSO = True
-    RAISE NOTICE 'update user %s', update_user_profile(p_username, p_sso_enabled => '1');
-
     -- Update_User_Profile SSO=off
-    RAISE NOTICE 'update user %s', update_user_profile(p_username, p_user_pswd => 'AbcD4321'::text, p_sso_enabled => '0'::char(1));
+    RAISE NOTICE 'set sso off user %s', update_user_profile(p_username, p_user_pswd => 'AbcD4321'::text, p_sso_enabled => '0'::char(1));
 
     -- change template
-    RAISE NOTICE 'update user %s', update_user_profile(p_username, p_template_name => 'DEFAULT');
+    RAISE NOTICE 'change template %s', update_user_profile(p_username, p_template_name => 'DEFAULT');
 
     -- RESET password
     RAISE NOTICE 'change password %s', reset_user_password(p_username, 'Hq9i8dw6JWHq9i8dw6JW'::text);
@@ -68,10 +65,10 @@ declare
   p_username text := 'cen12345';
 begin
   -- GRANT role
-  RAISE NOTICE 'change password %s', grant_role(p_username,'csconnect');
+  RAISE NOTICE 'grant role %s', grant_role(p_username,'csconnect');
 
   -- REVOKE ROLE
-  RAISE NOTICE 'change password %s', revoke_role(p_username,'csconnect');
+  RAISE NOTICE 'revoke role %s', revoke_role(p_username,'csconnect');
 end $$;
 
 --cleanup

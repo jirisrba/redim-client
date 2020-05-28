@@ -15,5 +15,5 @@ begin
       quote_ident(lower(p_username)));
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
-  RAISE NOTICE 'revoke role %s', run_sql(sql, debug);
+  EXECUTE run_sql(sql, debug);
 END $$;

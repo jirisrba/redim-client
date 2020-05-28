@@ -9,12 +9,11 @@ declare
   sql text;
 begin
   -- SQL command to change password
-  sql := format(
-      'GRANT %s TO %s',
-      quote_ident(p_role_name),
-      quote_ident(lower(p_username)));
+  sql := format('GRANT %s TO %s',
+            quote_ident(p_role_name),
+            quote_ident(lower(p_username)));
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
-  RAISE NOTICE 'grant role %s', run_sql(sql, debug);
+  EXECUTE run_sql(sql, debug);
 end;
 $$;

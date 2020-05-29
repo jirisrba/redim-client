@@ -10,11 +10,17 @@ declare
   v_username text := lower(p_username);
 begin
 
-  /* pouze operace drop, lock nema u postgresu smysl (=role)  */
-  if p_operation_type = 'drop'
-  then
+  -- assert lock nebo drop user
+  if p_operation_type not in ('lock', 'drop') then
+    RAISE EXCEPTION 'Invalid operation type';
+  end if;
+
+  /* pouze operace drop, lock nema u postgresu smysl (lock=role)  */
+  if p_operation_type = 'drop' then
   -- SQL command to create user
     sql := format('DROP USER %s', quote_ident(v_username));
+  else
+    RAISE EXCEPTION 'Lock user is not supported';
   end if;
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim

@@ -4,7 +4,7 @@ create or replace function redim.revoke_role(
     debug boolean DEFAULT false)
   returns void
   language plpgsql
-as $$
+  as $$
 declare
   sql text;
   v_username text := lower(p_username);

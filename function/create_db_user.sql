@@ -6,9 +6,12 @@ create or replace function redim.create_db_user(
     debug    boolean DEFAULT false)
   returns void
   language plpgsql
-as $$
+  as $$
 declare
+
   sql text;
+  v_username text := lower(p_username);
+
 begin
 
   -- SSO on
@@ -19,11 +22,13 @@ begin
   -- SQL command to create user
   sql := format(
       'CREATE USER %s WITH PASSWORD %s',
-      quote_ident(lower(p_username)),
+      quote_ident(v_username),
       quote_literal(p_user_pswd));
 
   -- pro debug pouze vypisuju prikazy, jinak ho provadim
   EXECUTE run_sql(sql, debug);
+
+  RAISE NOTICE 'user % created', v_username;
 
 end;
 $$;

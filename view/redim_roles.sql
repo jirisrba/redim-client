@@ -15,6 +15,6 @@ AS
           pg_catalog.pg_roles r
     LEFT JOIN pg_catalog.pg_shdescription c ON c.objoid = r.oid
   WHERE r.rolcanlogin = 'f'
+    and r.rolsuper = 'f'      -- neni to Superuser role (dba)
     and r.rolname !~ '^pg_'
-    and r.rolname not in ('DBA')
 ;

@@ -8,8 +8,6 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     restart: 'always'
-#    volumes:
-#       - postgres:/data/postgres
     ports:
       - '5432:5432'
     networks:

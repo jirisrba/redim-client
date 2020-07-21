@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   postgres:
-    container_name: postgres
+    image: postgres:latest
+    hostname: postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -14,7 +15,12 @@ services:
       - postgres
     build:
       context: ./
-    image: redim-postgres:latest
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 
 networks:
   postgres:

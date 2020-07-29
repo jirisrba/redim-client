@@ -1,20 +1,18 @@
 version: '3.8'
 
 services:
-  postgres:
+
+  db:
     image: postgres:latest
     hostname: postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
-    restart: 'always'
     ports:
       - '5432:5432'
-    networks:
-      - postgres
-    build:
-      context: ./
 
-networks:
-  postgres:
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
